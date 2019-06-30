@@ -190,7 +190,8 @@ void rainbowCycle(uint8_t wait) {
 }
 
 void handleSerial() {
- while (Serial.available() > 0) {
+ if (Serial.available() >0) {
+  while (Serial.available() > 0) {
    char incomingCharacter = Serial.read();
    
    switch (incomingCharacter) {
@@ -237,7 +238,11 @@ void handleSerial() {
       strip2.setBrightness(brightness);
       break;
     }
- }
+   }
+  }
+  else {
+    setB(-100);
+  }
 }
 
 
