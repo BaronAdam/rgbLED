@@ -22,12 +22,23 @@ namespace RGB_LED_controller
             }
             catch (UnauthorizedAccessException e)
             {
-                var result = MessageBox.Show(e.Message, "Błąd otwarcia portu");
+                var result = MessageBox.Show(e.Message, "RGB LED Controller");
                 this.Close();
             }
 
-            hScrollBar1.Value = 40;
+            hScrollBar1.Value = 50;
             label1.Text = hScrollBar1.Value.ToString();
+
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem menuItem = new MenuItem();
+
+            contextMenu.MenuItems.AddRange(new MenuItem[] { menuItem });
+
+            menuItem.Index = 0;
+            menuItem.Text = "Wyjdź";
+            menuItem.Click += new EventHandler(MenuExit_Click);
+
+            notifyIcon1.ContextMenu = contextMenu;
         }
 
         private void ButtonRainbow_Click(object sender, EventArgs e)
@@ -144,6 +155,11 @@ namespace RGB_LED_controller
             Show();
             this.WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
+        }
+
+        private void MenuExit_Click(object Sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
