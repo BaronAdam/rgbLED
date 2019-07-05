@@ -8,3 +8,13 @@ C:\Users\adamo\source\repos\RGB LED controller\RGB LED controller\obj\Debug\RGB 
 C:\Users\adamo\source\repos\RGB LED controller\RGB LED controller\obj\Debug\RGB LED controller.csproj.CoreCompileInputs.cache
 C:\Users\adamo\source\repos\RGB LED controller\RGB LED controller\obj\Debug\RGB LED controller.exe
 C:\Users\adamo\source\repos\RGB LED controller\RGB LED controller\obj\Debug\RGB LED controller.pdb
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\bin\Debug\RGB LED controller.exe.config
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\bin\Debug\RGB LED controller.exe
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\bin\Debug\RGB LED controller.pdb
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB LED controller.csprojAssemblyReference.cache
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB_LED_controller.Form1.resources
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB_LED_controller.Properties.Resources.resources
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB LED controller.csproj.GenerateResource.cache
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB LED controller.csproj.CoreCompileInputs.cache
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB LED controller.exe
+C:\Users\adamo\Documents\GitHub\rgbLED\CS application\RGB LED controller\obj\Debug\RGB LED controller.pdb

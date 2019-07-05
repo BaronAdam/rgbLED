@@ -13,13 +13,21 @@ namespace RGB_LED_controller
             InitializeComponent();
             this.WindowState = FormWindowState.Minimized;
 
-            hScrollBar1.Value = 35;
-            label1.Text = hScrollBar1.Value.ToString();
-
             serial = new SerialPort();
             serial.PortName = "COM3";
             serial.BaudRate = 9600;
-            serial.Open();
+            try
+            {
+                serial.Open();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                var result = MessageBox.Show(e.Message, "Błąd otwarcia portu");
+                this.Close();
+            }
+
+            hScrollBar1.Value = 40;
+            label1.Text = hScrollBar1.Value.ToString();
         }
 
         private void ButtonRainbow_Click(object sender, EventArgs e)
