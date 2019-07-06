@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.IO.Ports;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace RGB_LED_controller
 {
@@ -11,7 +13,7 @@ namespace RGB_LED_controller
         public Form1()
         {
             InitializeComponent();
-            this.WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Minimized;
 
             serial = new SerialPort();
             serial.PortName = "COM3";
@@ -22,12 +24,9 @@ namespace RGB_LED_controller
             }
             catch (UnauthorizedAccessException e)
             {
-                var result = MessageBox.Show(e.Message, "RGB LED Controller");
-                this.Close();
+                MessageBox.Show(e.Message, "RGB LED Controller");
+                Close();
             }
-
-            hScrollBar1.Value = 50;
-            label1.Text = hScrollBar1.Value.ToString();
 
             ContextMenu contextMenu = new ContextMenu();
             MenuItem menuItem = new MenuItem();
@@ -39,36 +38,40 @@ namespace RGB_LED_controller
             menuItem.Click += new EventHandler(MenuExit_Click);
 
             notifyIcon1.ContextMenu = contextMenu;
+
+            LoadXmlFile();
         }
 
         private void ButtonRainbow_Click(object sender, EventArgs e)
         {
-            serial.Write("r");
+            SendSerial("r");
         }
         private void ButtonRainbow2_Click(object sender, EventArgs e)
         {
-            serial.Write("t");
+            SendSerial("t");
         }
 
         private void ButtonRed_Click(object sender, EventArgs e)
         {
-            serial.Write("R");
+            SendSerial("R");
         }
 
         private void ButtonGreen_Click(object sender, EventArgs e)
         {
-            serial.Write("G");
+            SendSerial("G");
         }
 
         private void ButtonBlue_Click(object sender, EventArgs e)
         {
-            serial.Write("B");
+            SendSerial("B");
         }
 
         private void ButtonWhite_Click(object sender, EventArgs e)
         {
-            serial.Write("W");
+            SendSerial("W");
         }
+
+        String usedColor = "000000";
 
         private void ButtonChooseColor_Click(object sender, EventArgs e)
         {
@@ -89,36 +92,17 @@ namespace RGB_LED_controller
             }
 
             textBox1.Text = color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+            usedColor = textBox1.Text;
         }
 
         private void ButtonChangeColor_Click(object sender, EventArgs e)
         {
-            String color = textBox1.Text;
-
-            String[] colorArr = new String[3];
-
-            int index = 0;
-            for (int i = 0; i < color.Length; i += 2)
-            {
-                colorArr[index] = color.Substring(i, 2);
-                index++;
-            }
-
-            serial.Write("C");
-            foreach (var c in colorArr)
-            {
-                int x = int.Parse(c.ToString(), System.Globalization.NumberStyles.HexNumber);
-                byte[] b = BitConverter.GetBytes(x);
-                serial.Write(b, 0, 1);
-            }
+            SetColor();
         }
 
         private void ButtonSetBrightness_Click(object sender, EventArgs e)
         {
-            int sliderValue = hScrollBar1.Value;
-            byte[] b = BitConverter.GetBytes(sliderValue);
-            serial.Write("b");
-            serial.Write(b, 0, 1);
+            SetBrightness();
         }
 
         private void HScrollBar1_ValueChanged(object sender, EventArgs e)
@@ -143,7 +127,7 @@ namespace RGB_LED_controller
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)
+            if (WindowState == FormWindowState.Minimized)
             {
                 Hide();
                 notifyIcon1.Visible = true;
@@ -153,13 +137,146 @@ namespace RGB_LED_controller
         private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
-            this.WindowState = FormWindowState.Normal;
+            WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
         }
 
         private void MenuExit_Click(object Sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
+
+        String lastCommand = "r";
+
+        private void SendSerial(String command)
+        {
+            serial.Write(command);
+
+            lastCommand = command;
+        }
+
+        int usedBrightness;
+
+        private void SetBrightness()
+        {
+            int sliderValue = hScrollBar1.Value;
+            usedBrightness = sliderValue;
+            byte[] b = BitConverter.GetBytes(sliderValue);
+            serial.Write("b");
+            serial.Write(b, 0, 1);
+        }
+
+        private void SetColor()
+        {
+            String color = textBox1.Text;
+
+            String[] colorArr = new String[3];
+
+            int index = 0;
+            for (int i = 0; i < color.Length; i += 2)
+            {
+                colorArr[index] = color.Substring(i, 2);
+                index++;
+            }
+
+            SendSerial("C");
+            foreach (var c in colorArr)
+            {
+                int x = int.Parse(c.ToString(), System.Globalization.NumberStyles.HexNumber);
+                byte[] b = BitConverter.GetBytes(x);
+                serial.Write(b, 0, 1);
+            }
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SaveXmlFile();
+        }
+
+        private void SaveXmlFile()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings()
+            {
+                Indent = true,
+                IndentChars = "    "
+            };
+
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\RGB LED Controller";
+
+            try
+            {
+                // Determine whether the directory exists.
+                if (Directory.Exists(path))
+                {
+                    
+                }
+                else
+                {
+                    DirectoryInfo di = Directory.CreateDirectory(path);
+                }
+                
+                XmlWriter xmlWriter = XmlWriter.Create(path + "\\settings.xml", settings);
+
+                xmlWriter.WriteStartDocument();
+                 
+                xmlWriter.WriteStartElement("settings");
+
+                xmlWriter.WriteStartElement("function");
+                xmlWriter.WriteString(lastCommand);
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("color");
+                xmlWriter.WriteString(usedColor);
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("brightness");
+                xmlWriter.WriteString(usedBrightness.ToString());
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteEndDocument();
+                xmlWriter.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "RGB LED Controller");
+            }
+        }
+
+        private void LoadXmlFile()
+        {
+            try
+            {
+                //String path = "save.xml";
+                String path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\RGB LED Controller\\settings.xml";
+
+                XmlDocument document = new XmlDocument();
+                document.Load(path);
+
+                String function = document.SelectSingleNode("/settings/function").InnerText;
+                String color = document.SelectSingleNode("/settings/color").InnerText;
+                int brightness = Int32.Parse(document.SelectSingleNode("/settings/brightness").InnerText);
+
+                if (function != "C")
+                {
+                    SendSerial(function);
+                }
+                else
+                {
+                    textBox1.Text = color;
+                    usedColor = color;
+                    SetColor();
+                }
+
+                hScrollBar1.Value = brightness;
+                label1.Text = hScrollBar1.Value.ToString();
+                SetBrightness();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "RGB LED Controller");
+            }
+        }        
     }
 }
