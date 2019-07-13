@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -271,6 +272,7 @@ namespace RGB_LED_controller
 
                 hScrollBar1.Value = brightness;
                 label1.Text = hScrollBar1.Value.ToString();
+                Thread.Sleep(500);
                 SetBrightness();
             }
             catch (Exception e)
