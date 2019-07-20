@@ -38,7 +38,7 @@ void setup() {
   strip.setBrightness(brightness);
   strip.show(); // Initialize all pixels to 'off'
   strip2.begin();
-  strip2.setBrightness(brightness);
+  strip2.setBrightness(brightness / 2);
   strip2.show(); // Initialize all pixels to 'off'
 }
 
@@ -102,7 +102,7 @@ void colorWipe(uint32_t c, uint8_t wait) {
 }
 
 void colorWipe2(uint32_t c, uint8_t wait) {
-  for(uint16_t i=0; i<strip2.numPixels(); i++) {
+  for(uint16_t i=2; i<strip2.numPixels(); i++) {
     strip2.setPixelColor(i, c);
     strip2.show();
     delay(wait);
@@ -141,7 +141,7 @@ void rainbow(uint8_t wait) {
   for(j=0; j<256; j++) {
     for(i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel2((i+j) & 255));
-      if (i < strip2.numPixels()) {
+      if (i < strip2.numPixels() && i > 1) {
         strip2.setPixelColor(i, Wheel((i+j) & 255));
       }
     }
@@ -179,7 +179,7 @@ void rainbowCycle(uint8_t wait) {
   for(j=0; j<256; j++) { // 5 cycles of all colors on wheel
     for(i=0; i< strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
-      if (i < strip2.numPixels()) {
+      if (i < strip2.numPixels() && i > 1) {
         strip2.setPixelColor(i, Wheel2(((i * 256 / strip2.numPixels()) + j) & 255));
       }
     }
@@ -235,7 +235,7 @@ void handleSerial() {
       while(!Serial.available()){}
       brightness = Serial.read();
       strip.setBrightness(brightness);
-      strip2.setBrightness(brightness);
+      strip2.setBrightness(brightness / 2);
       break;
     }
    }
