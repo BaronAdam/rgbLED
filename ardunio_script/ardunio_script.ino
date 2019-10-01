@@ -23,7 +23,7 @@ Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(58, PIN_2, NEO_GRB + NEO_KHZ800);
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
-int brightness = 45;
+int brightness = 50;
 int speedVal = 15;
 
 void setup() {
