@@ -4,7 +4,6 @@
 #endif
 
 #define PIN 6
-#define PIN_2 2
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -15,7 +14,6 @@
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(58, PIN_2, NEO_GRB + NEO_KHZ800);
 
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
@@ -37,9 +35,6 @@ void setup() {
   strip.begin();
   strip.setBrightness(brightness);
   strip.show(); // Initialize all pixels to 'off'
-  strip2.begin();
-  strip2.setBrightness(brightness / 2);
-  strip2.show(); // Initialize all pixels to 'off'
 }
 
 void handleSerial();
@@ -68,26 +63,21 @@ void functionSelector() {
     break;
     case 1:
       colorWipe(strip.Color(255, 0, 0), 1);
-      colorWipe2(strip.Color(255, 0, 0), 1);
     break;
     case 2:
       colorWipe(strip.Color(0, 255, 0), 1);
-      colorWipe2(strip.Color(0, 255, 0), 1);
     break;
     case 3:
       colorWipe(strip.Color(0, 0, 255), 1);
-      colorWipe2(strip.Color(0, 0, 255), 1);
     break;
     case 4:
       rainbow(speedVal);
     break;
     case 5:
       colorWipe(strip.Color(255, 255, 255), 1);
-      colorWipe2(strip.Color(255, 255, 255), 1);
     break;
     case 6:
       colorWipe(strip.Color(Red, Green, Blue), 1);
-      colorWipe2(strip2.Color(Red, Green, Blue), 1);
     break;
   }
 }
@@ -97,14 +87,6 @@ void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.show();
-    delay(wait);
-  }
-}
-
-void colorWipe2(uint32_t c, uint8_t wait) {
-  for(uint16_t i=2; i<strip2.numPixels(); i++) {
-    strip2.setPixelColor(i, c);
-    strip2.show();
     delay(wait);
   }
 }
@@ -122,31 +104,15 @@ uint32_t Wheel(byte WheelPos) {
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
-uint32_t Wheel2(byte WheelPos) {
-  WheelPos = 255 - WheelPos;
-  if(WheelPos < 85) {
-    return strip2.Color(255 - WheelPos * 3, 0, WheelPos * 3);
-  }
-  if(WheelPos < 170) {
-    WheelPos -= 85;
-    return strip2.Color(0, WheelPos * 3, 255 - WheelPos * 3);
-  }
-  WheelPos -= 170;
-  return strip2.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
-}
 
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
   for(j=0; j<256; j++) {
     for(i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel2((i+j) & 255));
-      if (i < strip2.numPixels() && i > 1) {
-        strip2.setPixelColor(i, Wheel((i+j) & 255));
-      }
+      strip.setPixelColor(i, Wheel((i+j) & 255));
     }
     strip.show();
-    strip2.show();
     delay(wait);
   }
 }
@@ -179,12 +145,8 @@ void rainbowCycle(uint8_t wait) {
   for(j=0; j<256; j++) { // 5 cycles of all colors on wheel
     for(i=0; i< strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
-      if (i < strip2.numPixels() && i > 1) {
-        strip2.setPixelColor(i, Wheel2(((i * 256 / strip2.numPixels()) + j) & 255));
-      }
     }
     strip.show();
-    strip2.show();
     delay(wait);
   }
 }
@@ -235,7 +197,6 @@ void handleSerial() {
       while(!Serial.available()){}
       brightness = Serial.read();
       strip.setBrightness(brightness);
-      strip2.setBrightness(brightness / 2);
       break;
     }
    }

@@ -22,6 +22,10 @@ namespace RGB_LED_controller
             try
             {
                 serial.Open();
+                Thread.Sleep(3000);
+                serial.Close();
+                Thread.Sleep(3000);
+                serial.Open();
             }
             catch (UnauthorizedAccessException e)
             {
@@ -170,6 +174,7 @@ namespace RGB_LED_controller
         private void SetColor()
         {
             String color = textBox1.Text;
+            usedColor = textBox1.Text;
 
             String[] colorArr = new String[3];
 
@@ -202,7 +207,8 @@ namespace RGB_LED_controller
                 IndentChars = "    "
             };
 
-            String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\RGB LED Controller";
+            //String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\RGB LED Controller";
+            String path = "C:\\ProgramData\\RGB LED Controller";
 
             try
             {
@@ -250,7 +256,8 @@ namespace RGB_LED_controller
             try
             {
                 //String path = "save.xml";
-                String path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\RGB LED Controller\\settings.xml";
+                //String path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) "\\RGB LED Controller\\settings.xml";
+                String path = "C:\\ProgramData\\RGB LED Controller\\settings.xml";
 
                 XmlDocument document = new XmlDocument();
                 document.Load(path);
