@@ -47,8 +47,6 @@ void loop() {
 //  colorWipe(strip.Color(0, 255, 0), 10); // Green
 //  colorWipe(strip.Color(0, 0, 255), 10); // Blue
 
-//  rainbow(10);
-//  rainbowCycle(10);
   handleSerial();
   functionSelector();
 }
@@ -59,7 +57,6 @@ void functionSelector() {
   switch (selectedFunction){
     case 0:
       rainbowCycle(speedVal);
-//      rainbowCycle2(15);
     break;
     case 1:
       colorWipe(strip.Color(255, 0, 0), 1);
