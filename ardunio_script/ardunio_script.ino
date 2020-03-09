@@ -15,7 +15,6 @@
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
-
 int brightness = 50;
 int speedVal = 15;
 
@@ -65,7 +64,6 @@ void functionSelector() {
   }
 }
 
-// Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
@@ -122,7 +120,6 @@ void setS(int b) {
   }
 }
 
-// Slightly different, this makes the rainbow equally distributed throughout
 void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
   for(j=0; j<256; j++) { // 5 cycles of all colors on wheel
