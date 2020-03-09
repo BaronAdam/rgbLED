@@ -16,25 +16,15 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
 
-// IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
-// pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
-// and minimize distance between Arduino and first pixel.  Avoid connecting
-// on a live circuit...if you must, connect GND first.
-
 int brightness = 50;
 int speedVal = 15;
 
 void setup() {
-  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-//  #if defined (__AVR_ATtiny85__)
-//    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-//  #endif
-  // End of trinket special code
 
   Serial.begin(9600);
   strip.begin();
   strip.setBrightness(brightness);
-  strip.show(); // Initialize all pixels to 'off'
+  strip.show(); 
 }
 
 void handleSerial();
@@ -42,10 +32,6 @@ void functionSelector();
 int Red, Green, Blue;
 
 void loop() {
-  // Some example procedures showing how to display to the pixels:
-//  colorWipe(strip.Color(255, 0, 0), 10); // Red
-//  colorWipe(strip.Color(0, 255, 0), 10); // Green
-//  colorWipe(strip.Color(0, 0, 255), 10); // Blue
 
   handleSerial();
   functionSelector();
