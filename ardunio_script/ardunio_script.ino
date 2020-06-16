@@ -15,26 +15,15 @@
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
-
-// IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
-// pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
-// and minimize distance between Arduino and first pixel.  Avoid connecting
-// on a live circuit...if you must, connect GND first.
-
 int brightness = 50;
 int speedVal = 15;
 
 void setup() {
-  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-//  #if defined (__AVR_ATtiny85__)
-//    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-//  #endif
-  // End of trinket special code
 
   Serial.begin(9600);
   strip.begin();
   strip.setBrightness(brightness);
-  strip.show(); // Initialize all pixels to 'off'
+  strip.show(); 
 }
 
 void handleSerial();
@@ -43,10 +32,6 @@ void dualColor();
 int Red, Green, Blue, r1, g1, b1, r2, g2, b2;
 
 void loop() {
-  // Some example procedures showing how to display to the pixels:
-//  colorWipe(strip.Color(255, 0, 0), 10); // Red
-//  colorWipe(strip.Color(0, 255, 0), 10); // Green
-//  colorWipe(strip.Color(0, 0, 255), 10); // Blue
 
   handleSerial();
   functionSelector();
@@ -96,7 +81,6 @@ void dualColor(uint32_t c2, uint32_t c1, uint8_t wait) {
   }
 }
 
-// Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
@@ -153,7 +137,6 @@ void setS(int b) {
   }
 }
 
-// Slightly different, this makes the rainbow equally distributed throughout
 void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
   for(j=0; j<256; j++) { // 5 cycles of all colors on wheel
