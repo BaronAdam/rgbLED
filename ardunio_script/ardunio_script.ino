@@ -63,7 +63,7 @@ void functionSelector() {
       colorWipe(strip.Color(Red, Green, Blue), 1);
     break;
     case 7:
-      dualColor(strip.Color(r1,g1,b1), strip.Color(r2,b2,b2), 1);
+      dualColor(strip.Color(r1,g1,b1), strip.Color(r2,g2,b2), 1);
     break;
   }
 }
