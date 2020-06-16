@@ -40,12 +40,16 @@
             this.buttonChooseColor = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.buttonChangeColor = new System.Windows.Forms.Button();
-            this.buttonSpeedPlus = new System.Windows.Forms.Button();
-            this.buttonSpeedMinus = new System.Windows.Forms.Button();
-            this.buttonResetSpeed = new System.Windows.Forms.Button();
             this.buttonWhite = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.ButtonColorRight = new System.Windows.Forms.Button();
+            this.buttonColorLeft = new System.Windows.Forms.Button();
+            this.pictureBoxLeft = new System.Windows.Forms.PictureBox();
+            this.pictureBoxRight = new System.Windows.Forms.PictureBox();
+            this.buttonSetDualColor = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonRainbow
@@ -147,36 +151,6 @@
             this.buttonChangeColor.UseVisualStyleBackColor = true;
             this.buttonChangeColor.Click += new System.EventHandler(this.ButtonChangeColor_Click);
             // 
-            // buttonSpeedPlus
-            // 
-            this.buttonSpeedPlus.Location = new System.Drawing.Point(417, 12);
-            this.buttonSpeedPlus.Name = "buttonSpeedPlus";
-            this.buttonSpeedPlus.Size = new System.Drawing.Size(95, 23);
-            this.buttonSpeedPlus.TabIndex = 10;
-            this.buttonSpeedPlus.Text = "Speed +";
-            this.buttonSpeedPlus.UseVisualStyleBackColor = true;
-            this.buttonSpeedPlus.Click += new System.EventHandler(this.ButtonSpeedPlus_Click);
-            // 
-            // buttonSpeedMinus
-            // 
-            this.buttonSpeedMinus.Location = new System.Drawing.Point(417, 43);
-            this.buttonSpeedMinus.Name = "buttonSpeedMinus";
-            this.buttonSpeedMinus.Size = new System.Drawing.Size(95, 23);
-            this.buttonSpeedMinus.TabIndex = 11;
-            this.buttonSpeedMinus.Text = "Speed -";
-            this.buttonSpeedMinus.UseVisualStyleBackColor = true;
-            this.buttonSpeedMinus.Click += new System.EventHandler(this.ButtonSpeedMinus_Click);
-            // 
-            // buttonResetSpeed
-            // 
-            this.buttonResetSpeed.Location = new System.Drawing.Point(417, 72);
-            this.buttonResetSpeed.Name = "buttonResetSpeed";
-            this.buttonResetSpeed.Size = new System.Drawing.Size(95, 23);
-            this.buttonResetSpeed.TabIndex = 12;
-            this.buttonResetSpeed.Text = "Reset Speed";
-            this.buttonResetSpeed.UseVisualStyleBackColor = true;
-            this.buttonResetSpeed.Click += new System.EventHandler(this.ButtonResetSpeed_Click);
-            // 
             // buttonWhite
             // 
             this.buttonWhite.Location = new System.Drawing.Point(12, 72);
@@ -202,16 +176,64 @@
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.NotifyIcon1_MouseDoubleClick);
             // 
+            // ButtonColorRight
+            // 
+            this.ButtonColorRight.Location = new System.Drawing.Point(417, 43);
+            this.ButtonColorRight.Name = "ButtonColorRight";
+            this.ButtonColorRight.Size = new System.Drawing.Size(95, 23);
+            this.ButtonColorRight.TabIndex = 16;
+            this.ButtonColorRight.Text = "Right Color";
+            this.ButtonColorRight.UseVisualStyleBackColor = true;
+            this.ButtonColorRight.Click += new System.EventHandler(this.ButtonColorRight_Click);
+            // 
+            // buttonColorLeft
+            // 
+            this.buttonColorLeft.Location = new System.Drawing.Point(417, 14);
+            this.buttonColorLeft.Name = "buttonColorLeft";
+            this.buttonColorLeft.Size = new System.Drawing.Size(95, 23);
+            this.buttonColorLeft.TabIndex = 17;
+            this.buttonColorLeft.Text = "Left Color";
+            this.buttonColorLeft.UseVisualStyleBackColor = true;
+            this.buttonColorLeft.Click += new System.EventHandler(this.buttonColorLeft_Click);
+            // 
+            // pictureBoxLeft
+            // 
+            this.pictureBoxLeft.Location = new System.Drawing.Point(418, 72);
+            this.pictureBoxLeft.Name = "pictureBoxLeft";
+            this.pictureBoxLeft.Size = new System.Drawing.Size(24, 24);
+            this.pictureBoxLeft.TabIndex = 18;
+            this.pictureBoxLeft.TabStop = false;
+            // 
+            // pictureBoxRight
+            // 
+            this.pictureBoxRight.Location = new System.Drawing.Point(448, 72);
+            this.pictureBoxRight.Name = "pictureBoxRight";
+            this.pictureBoxRight.Size = new System.Drawing.Size(24, 24);
+            this.pictureBoxRight.TabIndex = 19;
+            this.pictureBoxRight.TabStop = false;
+            // 
+            // buttonSetDualColor
+            // 
+            this.buttonSetDualColor.Location = new System.Drawing.Point(478, 73);
+            this.buttonSetDualColor.Name = "buttonSetDualColor";
+            this.buttonSetDualColor.Size = new System.Drawing.Size(34, 23);
+            this.buttonSetDualColor.TabIndex = 20;
+            this.buttonSetDualColor.Text = "Set";
+            this.buttonSetDualColor.UseVisualStyleBackColor = true;
+            this.buttonSetDualColor.Click += new System.EventHandler(this.buttonSetDualColor_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(526, 104);
+            this.Controls.Add(this.buttonSetDualColor);
+            this.Controls.Add(this.pictureBoxRight);
+            this.Controls.Add(this.pictureBoxLeft);
+            this.Controls.Add(this.buttonColorLeft);
+            this.Controls.Add(this.ButtonColorRight);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonWhite);
-            this.Controls.Add(this.buttonResetSpeed);
-            this.Controls.Add(this.buttonSpeedMinus);
-            this.Controls.Add(this.buttonSpeedPlus);
             this.Controls.Add(this.buttonChangeColor);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.buttonChooseColor);
@@ -233,6 +255,8 @@
             this.Text = "RGB LED Controller";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Resize += new System.EventHandler(this.Form1_Resize);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -250,12 +274,14 @@
         private System.Windows.Forms.Button buttonChooseColor;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button buttonChangeColor;
-        private System.Windows.Forms.Button buttonSpeedPlus;
-        private System.Windows.Forms.Button buttonSpeedMinus;
-        private System.Windows.Forms.Button buttonResetSpeed;
         private System.Windows.Forms.Button buttonWhite;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Button ButtonColorRight;
+        private System.Windows.Forms.Button buttonColorLeft;
+        private System.Windows.Forms.PictureBox pictureBoxLeft;
+        private System.Windows.Forms.PictureBox pictureBoxRight;
+        private System.Windows.Forms.Button buttonSetDualColor;
     }
 }
 
