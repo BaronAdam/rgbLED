@@ -28,7 +28,8 @@ void setup() {
 
 void handleSerial();
 void functionSelector();
-int Red, Green, Blue;
+void dualColor();
+int Red, Green, Blue, r1, g1, b1, r2, g2, b2;
 
 void loop() {
 
@@ -61,6 +62,22 @@ void functionSelector() {
     case 6:
       colorWipe(strip.Color(Red, Green, Blue), 1);
     break;
+    case 7:
+      dualColor(strip.Color(r1,g1,b1), strip.Color(r2,b2,b2), 1);
+    break;
+  }
+}
+
+void dualColor(uint32_t c2, uint32_t c1, uint8_t wait) {
+  for (uint16_t i=0; i < strip.numPixels() * 0.5; i++) {
+    strip.setPixelColor(i, c1);
+    strip.show();
+    delay(wait);
+  }
+  for (uint16_t i = strip.numPixels() * 0.5; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, c2);
+    strip.show();
+    delay(wait);
   }
 }
 
@@ -163,6 +180,21 @@ void handleSerial() {
       while(!Serial.available()){}
       Blue = Serial.read();
       selectedFunction = 6;
+      break;
+    case 'd':
+      while(!Serial.available()){}
+      r1 = Serial.read();
+      while(!Serial.available()){}
+      g1 = Serial.read();
+      while(!Serial.available()){}
+      b1 = Serial.read();
+      while(!Serial.available()){}
+      r2 = Serial.read();
+      while(!Serial.available()){}
+      g2 = Serial.read();
+      while(!Serial.available()){}
+      b2 = Serial.read();
+      selectedFunction = 7;
       break;
     case '[':
       setS(5);

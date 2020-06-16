@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
@@ -23,9 +24,9 @@ namespace RGB_LED_controller
             {
                 serial.Open();
                 Thread.Sleep(3000);
-                serial.Close();
-                Thread.Sleep(3000);
-                serial.Open();
+                //serial.Close();
+                //Thread.Sleep(3000);
+                //serial.Open();
             }
             catch (UnauthorizedAccessException e)
             {
@@ -39,13 +40,12 @@ namespace RGB_LED_controller
             contextMenu.MenuItems.AddRange(new MenuItem[] { menuItem });
 
             menuItem.Index = 0;
-            menuItem.Text = "Wyjdź";
+            menuItem.Text = "Exit";
             menuItem.Click += new EventHandler(MenuExit_Click);
 
             notifyIcon1.ContextMenu = contextMenu;
 
-            LoadXmlFile();
-        }
+            LoadXmlFile();        }
 
         private void ButtonRainbow_Click(object sender, EventArgs e)
         {
@@ -76,27 +76,40 @@ namespace RGB_LED_controller
             SendSerial("W");
         }
 
+        private Color chooseColor()
+        {
+            Color color;
+
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                colorDialog.AllowFullOpen = true;
+                colorDialog.ShowHelp = true;
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    color = colorDialog.Color;
+                }
+                else
+                {
+                    color = Color.White;
+                }
+            }
+
+            return color;
+        }
+
+        private String ColorToString(Color color)
+        {
+            return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+        } 
+
         String usedColor = "000000";
 
         private void ButtonChooseColor_Click(object sender, EventArgs e)
         {
-            ColorDialog colorDialog = new ColorDialog();
+            Color color = chooseColor();
 
-            colorDialog.AllowFullOpen = true;
-            colorDialog.ShowHelp = true;
-
-            Color color;
-            
-            if (colorDialog.ShowDialog() == DialogResult.OK)
-            {
-                color = colorDialog.Color;
-            }
-            else
-            {
-                color = Color.White;
-            }
-
-            textBox1.Text = color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+            textBox1.Text = ColorToString(color);
             usedColor = textBox1.Text;
         }
 
@@ -113,21 +126,6 @@ namespace RGB_LED_controller
         private void HScrollBar1_ValueChanged(object sender, EventArgs e)
         {
             label1.Text = hScrollBar1.Value.ToString();
-        }
-
-        private void ButtonSpeedPlus_Click(object sender, EventArgs e)
-        {
-            serial.Write("]");
-        }
-
-        private void ButtonSpeedMinus_Click(object sender, EventArgs e)
-        {
-            serial.Write("[");
-        }
-
-        private void ButtonResetSpeed_Click(object sender, EventArgs e)
-        {
-            serial.Write("*");
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -194,6 +192,25 @@ namespace RGB_LED_controller
             }
         }
 
+        private void SendHexColorString(String color)
+        {
+            String[] colorArr = new String[3];
+
+            int index = 0;
+            for (int i = 0; i < color.Length; i += 2)
+            {
+                colorArr[index] = color.Substring(i, 2);
+                index++;
+            }
+
+            foreach (var c in colorArr)
+            {
+                int x = int.Parse(c.ToString(), System.Globalization.NumberStyles.HexNumber);
+                byte[] b = BitConverter.GetBytes(x);
+                serial.Write(b, 0, 1);
+            }
+        }
+
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveXmlFile();
@@ -240,6 +257,14 @@ namespace RGB_LED_controller
                 xmlWriter.WriteString(usedBrightness.ToString());
                 xmlWriter.WriteEndElement();
 
+                xmlWriter.WriteStartElement("color_left");
+                xmlWriter.WriteString(ColorLeftString);
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("color_right");
+                xmlWriter.WriteString(ColorRightString);
+                xmlWriter.WriteEndElement();
+
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteEndDocument();
@@ -264,17 +289,33 @@ namespace RGB_LED_controller
 
                 String function = document.SelectSingleNode("/settings/function").InnerText;
                 String color = document.SelectSingleNode("/settings/color").InnerText;
+                String colorLeft = document.SelectSingleNode("/settings/color_left").InnerText;
+                String colorRight = document.SelectSingleNode("/settings/color_right").InnerText;
                 int brightness = Int32.Parse(document.SelectSingleNode("/settings/brightness").InnerText);
 
-                if (function != "C")
+                usedColor = color;
+                textBox1.Text = color;
+
+                ColorLeftString = colorLeft;
+                ColorRightString = colorRight;
+
+                ColorLeft = StringToColor(ColorLeftString);
+                ColorRight = StringToColor(ColorRightString);
+
+                pictureBoxLeft.BackColor = ColorLeft;
+                pictureBoxRight.BackColor = ColorRight;
+
+                if (function == "C")
+                { 
+                    SetColor();
+                }
+                else if (function == "d")
                 {
-                    SendSerial(function);
+                    SetDoubleColor();
                 }
                 else
                 {
-                    textBox1.Text = color;
-                    usedColor = color;
-                    SetColor();
+                    SendSerial(function);
                 }
 
                 hScrollBar1.Value = brightness;
@@ -286,6 +327,65 @@ namespace RGB_LED_controller
             {
                 MessageBox.Show(e.Message, "RGB LED Controller");
             }
-        }        
+        }
+
+        Color ColorLeft;
+        Color ColorRight;
+
+        private void buttonColorLeft_Click(object sender, EventArgs e)
+        {
+            ColorLeft = chooseColor();
+
+            pictureBoxLeft.BackColor = ColorLeft;
+        }
+
+        private void ButtonColorRight_Click(object sender, EventArgs e)
+        {
+            ColorRight = chooseColor();
+
+            pictureBoxRight.BackColor = ColorRight;
+        }
+
+        String ColorLeftString = "000000";
+        String ColorRightString = "000000";
+
+        private void buttonSetDualColor_Click(object sender, EventArgs e)
+        {
+            ColorLeftString = ColorToString(ColorLeft);
+            ColorRightString = ColorToString(ColorRight);
+
+            SetDoubleColor();
+        }
+
+        private void SetDoubleColor()
+        {
+            SendSerial("d");
+            SendHexColorString(ColorLeftString);
+            SendHexColorString(ColorRightString);
+        }
+
+        private Color StringToColor(String s)
+        {
+            String[] colorArr = new String[3];
+
+            int index = 0;
+            for (int i = 0; i < s.Length; i += 2)
+            {
+                colorArr[index] = s.Substring(i, 2);
+                index++;
+            }
+
+            List<int> colorsInt = new List<int>();
+
+            foreach (var c in colorArr)
+            {
+                int x = int.Parse(c.ToString(), System.Globalization.NumberStyles.HexNumber);
+                colorsInt.Add(x);
+            }
+
+            Color color = Color.FromArgb(colorsInt[0], colorsInt[1], colorsInt[2]);
+
+            return color;
+        }
     }
 }
