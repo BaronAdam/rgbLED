@@ -11,22 +11,20 @@ namespace RGB_LED_controller
 {
     public partial class Form1 : Form
     {
-        SerialPort serial;
         public Form1()
         {
             InitializeComponent();
             WindowState = FormWindowState.Minimized;
 
-            serial = new SerialPort();
-            serial.PortName = "COM3";
-            serial.BaudRate = 9600;
+            Serial = new SerialPort
+            {
+                PortName = "COM7",
+                BaudRate = 9600
+            };
             try
             {
-                serial.Open();
+                Serial.Open();
                 Thread.Sleep(3000);
-                //serial.Close();
-                //Thread.Sleep(3000);
-                //serial.Open();
             }
             catch (UnauthorizedAccessException e)
             {
@@ -76,7 +74,7 @@ namespace RGB_LED_controller
             SendSerial("W");
         }
 
-        private Color chooseColor()
+        private Color ChooseColor()
         {
             Color color;
 
@@ -107,7 +105,7 @@ namespace RGB_LED_controller
 
         private void ButtonChooseColor_Click(object sender, EventArgs e)
         {
-            Color color = chooseColor();
+            Color color = ChooseColor();
 
             textBox1.Text = ColorToString(color);
             usedColor = textBox1.Text;
@@ -137,13 +135,6 @@ namespace RGB_LED_controller
             }
         }
 
-        private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            Show();
-            WindowState = FormWindowState.Normal;
-            notifyIcon1.Visible = false;
-        }
-
         private void MenuExit_Click(object Sender, EventArgs e)
         {
             Close();
@@ -153,7 +144,7 @@ namespace RGB_LED_controller
 
         private void SendSerial(String command)
         {
-            serial.Write(command);
+            Serial.Write(command);
 
             lastCommand = command;
         }
@@ -165,8 +156,8 @@ namespace RGB_LED_controller
             int sliderValue = hScrollBar1.Value;
             usedBrightness = sliderValue;
             byte[] b = BitConverter.GetBytes(sliderValue);
-            serial.Write("b");
-            serial.Write(b, 0, 1);
+            Serial.Write("b");
+            Serial.Write(b, 0, 1);
         }
 
         private void SetColor()
@@ -188,7 +179,7 @@ namespace RGB_LED_controller
             {
                 int x = int.Parse(c.ToString(), System.Globalization.NumberStyles.HexNumber);
                 byte[] b = BitConverter.GetBytes(x);
-                serial.Write(b, 0, 1);
+                Serial.Write(b, 0, 1);
             }
         }
 
@@ -207,7 +198,7 @@ namespace RGB_LED_controller
             {
                 int x = int.Parse(c.ToString(), System.Globalization.NumberStyles.HexNumber);
                 byte[] b = BitConverter.GetBytes(x);
-                serial.Write(b, 0, 1);
+                Serial.Write(b, 0, 1);
             }
         }
 
@@ -230,15 +221,11 @@ namespace RGB_LED_controller
             try
             {
                 // Determine whether the directory exists.
-                if (Directory.Exists(path))
-                {
-                    
-                }
-                else
+                if (!Directory.Exists(path))
                 {
                     DirectoryInfo di = Directory.CreateDirectory(path);
                 }
-                
+
                 XmlWriter xmlWriter = XmlWriter.Create(path + "\\settings.xml", settings);
 
                 xmlWriter.WriteStartDocument();
@@ -334,20 +321,22 @@ namespace RGB_LED_controller
 
         private void buttonColorLeft_Click(object sender, EventArgs e)
         {
-            ColorLeft = chooseColor();
+            ColorLeft = ChooseColor();
 
             pictureBoxLeft.BackColor = ColorLeft;
         }
 
         private void ButtonColorRight_Click(object sender, EventArgs e)
         {
-            ColorRight = chooseColor();
+            ColorRight = ChooseColor();
 
             pictureBoxRight.BackColor = ColorRight;
         }
 
         String ColorLeftString = "000000";
         String ColorRightString = "000000";
+
+        public SerialPort Serial { get; }
 
         private void buttonSetDualColor_Click(object sender, EventArgs e)
         {
@@ -386,6 +375,14 @@ namespace RGB_LED_controller
             Color color = Color.FromArgb(colorsInt[0], colorsInt[1], colorsInt[2]);
 
             return color;
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+            notifyIcon1.Visible = false;
+
         }
     }
 }
